@@ -1,0 +1,212 @@
+{
+	"name": "PL_Load_NYCPayroll",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Aggregate_Summary",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "DF_ADLS_to_SQL_Payroll2021",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "DS_SQL_Payroll2020",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Aggregate_Summary",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DF_ADLS_to_SQL_AgencyMD",
+				"description": "\tAgency Master Data",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_ADLS_to_SQL_AgencyMD",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DF_ADLS_to_SQL_EmpMD",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_ADLS_to_SQL_EmpMD",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DF_ADLS_to_SQL_TitleMD",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_ADLS_to_SQL_TitleMD",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DS_SQL_Payroll2020",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "DF_ADLS_to_SQL_EmpMD",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "DF_ADLS_to_SQL_TitleMD",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "DF_ADLS_to_SQL_AgencyMD",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DS_SQL_Payroll2020",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DF_ADLS_to_SQL_Payroll2021",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "DF_ADLS_to_SQL_AgencyMD",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "DF_ADLS_to_SQL_EmpMD",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "DF_ADLS_to_SQL_TitleMD",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_ADLS_to_SQL_Payroll2021",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"dataflow_param_fiscalyear": {
+				"type": "int",
+				"defaultValue": 2020
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-05-21T21:30:12Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
